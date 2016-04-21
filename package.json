@@ -1,0 +1,29 @@
+{
+  "name": "realtime-crowdsource",
+  "version": "1.0.0",
+  "description": "A realtime polling application",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bethsecor/realtime-crowdsource.git"
+  },
+  "keywords": [
+    "node",
+    "websockets"
+  ],
+  "author": "Beth Secor",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bethsecor/realtime-crowdsource/issues"
+  },
+  "homepage": "https://github.com/bethsecor/realtime-crowdsource#readme",
+  "dependencies": {
+    "express": "^4.13.4",
+    "lodash": "^4.11.1",
+    "socket.io": "^1.4.5"
+  }
+}
