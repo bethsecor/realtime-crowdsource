@@ -2,9 +2,10 @@ const http = require('http');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const generateId = require('./lib/generate-id');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(express.static('public'));
 
 app.locals.polls = {};
@@ -14,13 +15,22 @@ app.get('/', function (req, res){
 });
 
 app.post('/polls', (request, response) => {
-  // console.log(request.body.poll);
-  // console.log(request.body);
   if (!request.body.poll) { return response.sendStatus(400); }
   var id = generateId();
-  app.locals.polls[id] = request.body.poll;
+  var admin = generateId();
+  app.locals.polls[id] = {};
+  app.locals.polls[id].question = request.body.poll.question;
+  app.locals.polls[id].options = getOptions(request.body.poll.options);
+  app.locals.polls[id].adminID = admin;
+  console.log(app.locals.polls[id]);
   // response.redirect('/polls/' + id);
 });
+
+function getOptions(options) {
+  return Object.keys(options).map(function (key) {
+      return options[key];
+  });
+}
 
 const port = process.env.PORT || 3000;
 
