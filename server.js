@@ -8,7 +8,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
+app.set('view engine', 'ejs');
+
 app.locals.polls = {};
+app.locals.url = "https://localhost:3000/";
 
 app.get('/', function (req, res){
   res.sendFile(__dirname + '/public/index.html');
@@ -20,25 +23,21 @@ app.post('/polls', (request, response) => {
   var admin = generateId();
   app.locals.polls[id] = {};
   app.locals.polls[id].question = request.body.poll.question;
-  app.locals.polls[id].options = getOptions(request.body.poll.options);
+  app.locals.polls[id].options = request.body.poll.options;
   app.locals.polls[id].adminID = admin;
   console.log(app.locals.polls[id]);
-  // response.redirect('/polls/' + id);
+  response.redirect('/polls/' + id + '/admin/' + admin );
 });
 
-function getOptions(options) {
-  return Object.keys(options).map(function (key) {
-      return options[key];
-  });
-}
+app.get('/polls/:pollID/admin/:adminID', function (req, res){
+  res.render('admin-poll', {pollID : req.params.pollID});
+});
 
 const port = process.env.PORT || 3000;
-
 const server = http.createServer(app)
                  .listen(port, function () {
                     console.log('Listening on port ' + port + '.');
                   });
-
 const socketIo = require('socket.io');
 const io = socketIo(server);
 
