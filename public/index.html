@@ -6,6 +6,26 @@
   <body>
     <div id="connection-count"></div>
 
+    </div>
+
+    <div class="new-poll">
+      <h3>Create A Poll!</h3>
+      <form action="/polls" method="post" name="poll">
+        Question:
+        <input type="text" name="poll[question]"><br>
+        Option 1:
+        <input type="text" name="poll[options][one]" class="option"><br>
+        Option 2:
+        <input type="text" name="poll[options][two]" class="option"><br>
+        Option 3:
+        <input type="text" name="poll[options][three]" class="option"><br>
+        Option 4:
+        <input type="text" name="poll[options][four]" class="option"><br>
+        <br>
+        <button type="submit">Create your poll</button>
+      </form>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/client.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
