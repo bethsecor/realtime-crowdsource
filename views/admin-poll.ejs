@@ -4,5 +4,10 @@
     <h3>Poll URL:</h3>
     <p><%= url %></p>
     <h3>Your poll results so far:</h3>
+    <div id="results">
+      <% for (var option in results){ %>
+        <p><%= option %>: <%= results[option]%></p>
+      <% } %>
+    </div>
 
 <% include ../partials/footer %>

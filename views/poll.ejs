@@ -4,8 +4,9 @@
     <h4><%= question %></h4>
     <div id="poll">
       <% options.forEach(function(option){ %>
-        <button><%= option %></button>
+        <button><%= option %></button><br>
       <% }); %>
     </div>
+    <div id="selection"></div>
 
 <% include ../partials/footer %>
