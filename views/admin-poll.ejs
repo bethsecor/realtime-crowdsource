@@ -9,5 +9,13 @@
         <p><%= option %>: <%= results[option]%></p>
       <% } %>
     </div>
+    <div id="poll-status">
+      <% if (closed) { %>
+        <p>Poll Status: "Closed" %></p>
+      <% } else { %>
+        <p>Poll Status: "Open" %></p>
+        <button id="close-poll">Close Poll</button>
+      <% } %>
+    </div>
 
 <% include ../partials/footer %>
