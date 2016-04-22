@@ -1,0 +1,11 @@
+<% include ../partials/header %>
+
+    <div id="connection-count"></div>
+    <h4><%= question %></h4>
+    <div id="poll">
+      <% options.forEach(function(option){ %>
+        <button><%= option %></button>
+      <% }); %>
+    </div>
+
+<% include ../partials/footer %>
