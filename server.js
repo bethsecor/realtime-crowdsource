@@ -29,13 +29,12 @@ app.post('/polls', (request, response) => {
   if (!request.body.poll) { return response.sendStatus(400); }
   var id = generateId();
   var admin = generateId();
+
   app.locals.polls[id] = request.body.poll;
   app.locals.polls[id].adminID = admin;
   app.locals.polls[id].url = "http://localhost:3000/polls/" + id;
   app.locals.polls[id].votes = {};
   app.locals.polls[id].closed = false;
-
-  autoClosePoll(id);
 
   response.redirect('/polls/' + id + '/admin/' + admin );
 });
