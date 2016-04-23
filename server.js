@@ -40,19 +40,6 @@ app.post('/polls', (request, response) => {
   response.redirect('/polls/' + id + '/admin/' + admin );
 });
 
-function autoClosePoll(id) {
-  if (app.locals.polls[id].closeTime !== "") {
-    setTimeout(function(){
-      app.locals.polls[id].closed = true;
-      io.sockets.emit('pollClosed', {pollID: id});
-    }, minutesToMilliseconds(app.locals.polls[id].closeTime));
-  }
-}
-
-function minutesToMilliseconds(minutes) {
-  return Number(minutes) * 60000;
-}
-
 app.get('/polls/:pollID', function (req, res){
   var pollID = req.params.pollID;
   var poll = app.locals.polls[pollID];
@@ -81,11 +68,14 @@ io.on('connection', function (socket) {
     var poll = app.locals.polls[message.id];
     if (channel === 'voteCast') {
       poll.votes[socket.id] = message.vote;
-      socket.emit('voteRecorded', "Your selection of " + message.vote + " has been recorded.");
+      socket.emit('voteRecorded', "Your selection of \"" + message.vote + "\" has been recorded. You may change your vote by making a different selection above.");
       io.sockets.emit('voteCount', {votes: countVotes(poll), pollID: message.id});
     } else if (channel === 'closePoll') {
       poll.closed = true;
       io.sockets.emit('pollClosed', {pollID: message.id});
+    } else if (channel === 'timeClosePoll') {
+      app.locals.polls[message.id].closeTime = message.minutes;
+      autoClosePoll(message.id);
     }
   });
 
@@ -94,6 +84,19 @@ io.on('connection', function (socket) {
     io.sockets.emit('usersConnected', io.engine.clientsCount);
   });
 });
+
+function autoClosePoll(id) {
+  if (app.locals.polls[id].closeTime !== "") {
+    setTimeout(function(){
+      app.locals.polls[id].closed = true;
+      io.sockets.emit('pollClosed', {pollID: id});
+    }, minutesToMilliseconds(app.locals.polls[id].closeTime));
+  }
+}
+
+function minutesToMilliseconds(minutes) {
+  return Number(minutes) * 60000;
+}
 
 function countVotes(poll) {
   var voteCount = {};

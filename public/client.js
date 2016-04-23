@@ -40,6 +40,25 @@ if ($('#close-poll')[0]) {
   });
 }
 
+if($('#time-close')[0]) {
+  $('#time-close')[0].addEventListener('focusout', function () {
+    console.log(this.value);
+    if(this.value !== "" && !isNaN(this.value)) {
+      $('#set-time').empty().append('<p> Poll will close at ' + browser_time(this.value) + '.<p>');
+      socket.send('timeClosePoll', {id: pollID, minutes: this.value});
+    }
+  });
+}
+
+function browser_time(minutes) {
+  var d = new Date();
+  var closePollTime = new Date(d.getTime() + Number(minutes)*60000);
+  var c_hour = closePollTime.getHours();
+  var c_min = closePollTime.getMinutes();
+  var time = c_hour + ":" + c_min;
+  return time;
+}
+
 var pollThings = document.getElementById('#poll-things');
 
 socket.on('pollClosed', function (message) {
