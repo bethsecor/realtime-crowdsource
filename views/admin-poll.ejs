@@ -11,9 +11,14 @@
     </div>
     <div id="poll-status">
       <% if (closed) { %>
-        <p>Poll Status: "Closed" %></p>
+        <p>Poll Status: Closed %></p>
       <% } else { %>
-        <p>Poll Status: "Open" %></p>
+        <p>Poll Status: Open %></p>
+        <div id="set-time">
+          Close poll in
+          <input type="text" id="time-close"> minutes.
+        </div>
+        <br>
         <button id="close-poll">Close Poll</button>
       <% } %>
     </div>

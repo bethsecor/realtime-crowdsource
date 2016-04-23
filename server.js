@@ -29,11 +29,13 @@ app.post('/polls', (request, response) => {
   if (!request.body.poll) { return response.sendStatus(400); }
   var id = generateId();
   var admin = generateId();
+
   app.locals.polls[id] = request.body.poll;
   app.locals.polls[id].adminID = admin;
   app.locals.polls[id].url = "http://localhost:3000/polls/" + id;
   app.locals.polls[id].votes = {};
   app.locals.polls[id].closed = false;
+
   response.redirect('/polls/' + id + '/admin/' + admin );
 });
 
@@ -52,7 +54,8 @@ app.get('/polls/:pollID/admin/:adminID', function (req, res){
   res.render('admin-poll', {pollID: pollID,
                             url: poll.url,
                             results: countVotes(poll),
-                            closed: poll.closed});
+                            closed: poll.closed,
+                            closeTime: poll.closeTime});
 });
 
 io.on('connection', function (socket) {
@@ -64,11 +67,14 @@ io.on('connection', function (socket) {
     var poll = app.locals.polls[message.id];
     if (channel === 'voteCast') {
       poll.votes[socket.id] = message.vote;
-      socket.emit('voteRecorded', "Your selection of " + message.vote + " has been recorded.");
+      socket.emit('voteRecorded', "Your selection of \"" + message.vote + "\" has been recorded. You may change your vote by making a different selection above.");
       io.sockets.emit('voteCount', {votes: countVotes(poll), pollID: message.id});
     } else if (channel === 'closePoll') {
       poll.closed = true;
       io.sockets.emit('pollClosed', {pollID: message.id});
+    } else if (channel === 'timeClosePoll') {
+      app.locals.polls[message.id].closeTime = message.minutes;
+      autoClosePoll(message.id);
     }
   });
 
@@ -77,6 +83,19 @@ io.on('connection', function (socket) {
     io.sockets.emit('usersConnected', io.engine.clientsCount);
   });
 });
+
+function autoClosePoll(id) {
+  if (app.locals.polls[id].closeTime !== "") {
+    setTimeout(function(){
+      app.locals.polls[id].closed = true;
+      io.sockets.emit('pollClosed', {pollID: id});
+    }, minutesToMilliseconds(app.locals.polls[id].closeTime));
+  }
+}
+
+function minutesToMilliseconds(minutes) {
+  return Number(minutes) * 60000;
+}
 
 function countVotes(poll) {
   var voteCount = {};
