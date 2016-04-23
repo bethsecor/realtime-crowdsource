@@ -1,4 +1,4 @@
-<% include ../partials/header %>
+<% include ./partials/header %>
 
     <div id="connection-count"></div>
 
@@ -16,4 +16,15 @@
     <% } %>
   </div>
 
-<% include ../partials/footer %>
+  <div class="poll-results">
+    <% if (share === 'on') { %>
+    <h3>Poll Results:</h3>
+    <div id="results">
+      <% for (var option in results){ %>
+        <p><%= option %>: <%= results[option][0] %> (<%= results[option][1] %>%)</p>
+      <% } %>
+    </div>
+    <% } %>
+  </div>
+
+<% include ./partials/footer %>

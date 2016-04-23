@@ -1,14 +1,19 @@
-<% include ../partials/header %>
+<% include ./partials/header %>
 
     <div id="connection-count"></div>
+    <h2><%= question %></h2>
+
     <h3>Poll URL:</h3>
-    <p><%= url %></p>
-    <h3>Your poll results so far:</h3>
+    <a href="<%= url %>"><%= url %></a>
+
+    <h3>Poll Results:</h3>
     <div id="results">
       <% for (var option in results){ %>
-        <p><%= option %>: <%= results[option]%></p>
+        <p><%= option %>: <%= results[option][0] %> (<%= results[option][1] %>%)</p>
       <% } %>
     </div>
+
+    <h3>Poll Status:</h3>
     <div id="poll-status">
       <% if (closed) { %>
         <p>Poll Status: Closed %></p>
@@ -18,9 +23,11 @@
           Close poll in
           <input type="text" id="time-close"> minutes.
         </div>
-        <br>
-        <button id="close-poll">Close Poll</button>
+        <p>
+          OR
+        </p>
+        <button id="close-poll">Close Poll Now</button>
       <% } %>
     </div>
 
-<% include ../partials/footer %>
+<% include ./partials/footer %>
