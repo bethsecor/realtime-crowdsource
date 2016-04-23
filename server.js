@@ -20,6 +20,7 @@ app.set('view engine', 'ejs');
 
 app.locals.polls = {};
 app.locals.title = "Crowdsource";
+app.locals.production = "https://arcane-lake-19394.herokuapp.com/";
 
 app.get('/', function (req, res){
   res.sendFile(__dirname + '/public/index.html');
@@ -30,9 +31,12 @@ app.post('/polls', (request, response) => {
   var id = generateId();
   var admin = generateId();
 
+  console.log(request.body.poll);
+
   app.locals.polls[id] = request.body.poll;
+  app.locals.polls[id].options = removeEmpty(request.body.poll.options);
   app.locals.polls[id].adminID = admin;
-  app.locals.polls[id].url = "http://localhost:3000/polls/" + id;
+  app.locals.polls[id].url = app.locals.production + "polls/" + id;
   app.locals.polls[id].votes = {};
   app.locals.polls[id].closed = false;
 
@@ -45,7 +49,9 @@ app.get('/polls/:pollID', function (req, res){
   res.render('poll', {pollID: pollID,
                       question: poll.question,
                       options: poll.options,
-                      closed: poll.closed});
+                      closed: poll.closed,
+                      share: poll.share,
+                      results: countVotes(poll)});
 });
 
 app.get('/polls/:pollID/admin/:adminID', function (req, res){
@@ -53,6 +59,7 @@ app.get('/polls/:pollID/admin/:adminID', function (req, res){
   var poll = app.locals.polls[pollID];
   res.render('admin-poll', {pollID: pollID,
                             url: poll.url,
+                            question: poll.question,
                             results: countVotes(poll),
                             closed: poll.closed,
                             closeTime: poll.closeTime});
@@ -95,6 +102,11 @@ function autoClosePoll(id) {
 
 function minutesToMilliseconds(minutes) {
   return Number(minutes) * 60000;
+}
+
+function removeEmpty(strings) {
+  return strings.filter(
+    function (string) { return string !== ""; });
 }
 
 function countVotes(poll) {
