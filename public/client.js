@@ -13,7 +13,7 @@ socket.on('voteCount', function (votes) {
   if ($results !== null && votes.pollID === pollID) {
     $('#results').empty();
     for (var option in votes.votes){
-      $('#results').append('<p>' + option + ': ' + votes.votes[option] + '<p>');
+      $('#results').append('<p>' + option + ': ' + votes.votes[option][0] + ' (' + votes.votes[option][1] + '%)' + '<p>');
     }
   }
 });

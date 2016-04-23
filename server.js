@@ -112,13 +112,24 @@ function removeEmpty(strings) {
 function countVotes(poll) {
   var voteCount = {};
   poll.options.forEach(function(option){
-    voteCount[option] = 0;
+    voteCount[option] = [0, 0];
   });
 
   for (var vote in poll.votes) {
-    voteCount[poll.votes[vote]]++;
+    voteCount[poll.votes[vote]][0]++;
+    if (voteCount[poll.votes[vote]][0] !== 0) {
+      voteCount[poll.votes[vote]][1] = percentage(poll.votes, vote, voteCount);
+    }
   }
   return voteCount;
+}
+
+function totalVotes(votes){
+  return Object.keys(votes).length;
+}
+
+function percentage(votes, vote, voteCount) {
+  return ((voteCount[votes[vote]][0] / totalVotes(votes)) * 100).toFixed(2);
 }
 
 if (!module.parent) {
