@@ -1,12 +1,19 @@
 <% include ../partials/header %>
 
     <div id="connection-count"></div>
-    <h4><%= question %></h4>
-    <div id="poll">
-      <% options.forEach(function(option){ %>
-        <button><%= option %></button><br>
-      <% }); %>
-    </div>
-    <div id="selection"></div>
+
+    <div id="poll-things">
+    <% if (closed) { %>
+      <p>This poll is closed. Sad day for you.</p>
+    <% } else { %>
+        <h4><%= question %></h4>
+        <div id="poll">
+          <% options.forEach(function(option){ %>
+            <button><%= option %></button><br>
+          <% }); %>
+        </div>
+        <div id="selection"></div>
+    <% } %>
+  </div>
 
 <% include ../partials/footer %>
