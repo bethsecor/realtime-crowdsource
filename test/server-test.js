@@ -1,7 +1,7 @@
 const assert = require('assert');
 const request = require('request');
 const app = require('../server');
-// const fixtures = require('./fixtures');
+const fixtures = require('./fixtures');
 
 describe('Server', () => {
 
@@ -55,6 +55,29 @@ describe('Server', () => {
       this.request.post('/polls', (error, response) => {
         if (error) { done(error); }
         assert.notEqual(response.statusCode, 404);
+        done();
+      });
+    });
+
+    it('should receive and restore data', (done) => {
+      var poll = { poll: fixtures.validPoll };
+
+      this.request.post('/polls', { form: poll }, (error, response) => {
+        if (error) { done(error); }
+        var pollCount = Object.keys(app.locals.polls).length;
+        assert.equal(pollCount, 1, `Expected 1 poll, found ${pollCount}`);
+        done();
+      });
+    });
+
+    it('should redirect the user to their new pizza', (done) => {
+      var poll = { poll: fixtures.validPoll };
+
+      this.request.post('/polls', { form: poll }, (error, response) => {
+        if (error) { done(error); }
+        var newPollId = Object.keys(app.locals.polls)[0];
+        var newAdminId = app.locals.polls[newPollId].adminID;
+        assert.equal(response.headers.location, '/polls/' + newPollId + '/admin/' + newAdminId);
         done();
       });
     });

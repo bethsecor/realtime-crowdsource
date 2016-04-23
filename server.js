@@ -31,8 +31,6 @@ app.post('/polls', (request, response) => {
   var id = generateId();
   var admin = generateId();
 
-  console.log(request.body.poll);
-
   app.locals.polls[id] = request.body.poll;
   app.locals.polls[id].options = removeEmpty(request.body.poll.options);
   app.locals.polls[id].adminID = admin;
