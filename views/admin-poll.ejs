@@ -6,12 +6,7 @@
     <h3>Poll URL:</h3>
     <a href="<%= url %>"><%= url %></a>
 
-    <h3>Poll Results:</h3>
-    <div id="results">
-      <% for (var option in results){ %>
-        <p><%= option %>: <%= results[option][0] %> (<%= results[option][1] %>%)</p>
-      <% } %>
-    </div>
+    <% include ./partials/results %>
 
     <h3>Poll Status:</h3>
     <div id="poll-status">
