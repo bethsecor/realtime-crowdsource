@@ -4,6 +4,10 @@ const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
 const generateId = require('./lib/generate-id');
+const countVotes = require('./lib/count-votes');
+const removeEmpty = require('./lib/remove-empty');
+const minutesToMilliseconds = require('./lib/minutes-to-milliseconds');
+
 const port = process.env.PORT || 3000;
 const server = http.createServer(app)
                  .listen(port, function () {
@@ -96,38 +100,6 @@ function autoClosePoll(id) {
       io.sockets.emit('pollClosed', {pollID: id});
     }, minutesToMilliseconds(app.locals.polls[id].closeTime));
   }
-}
-
-function minutesToMilliseconds(minutes) {
-  return Number(minutes) * 60000;
-}
-
-function removeEmpty(strings) {
-  return strings.filter(
-    function (string) { return string !== ""; });
-}
-
-function countVotes(poll) {
-  var voteCount = {};
-  poll.options.forEach(function(option){
-    voteCount[option] = [0, 0];
-  });
-
-  for (var vote in poll.votes) {
-    voteCount[poll.votes[vote]][0]++;
-    if (voteCount[poll.votes[vote]][0] !== 0) {
-      voteCount[poll.votes[vote]][1] = percentage(poll.votes, vote, voteCount);
-    }
-  }
-  return voteCount;
-}
-
-function totalVotes(votes){
-  return Object.keys(votes).length;
-}
-
-function percentage(votes, vote, voteCount) {
-  return ((voteCount[votes[vote]][0] / totalVotes(votes)) * 100).toFixed(2);
 }
 
 module.exports = app;
