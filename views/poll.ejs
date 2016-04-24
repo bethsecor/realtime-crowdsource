@@ -2,11 +2,11 @@
 
     <div id="connection-count"></div>
 
+    <h2><%= question %></h2>
     <div id="poll-things">
     <% if (closed) { %>
       <p>This poll is closed. Sad day for you.</p>
     <% } else { %>
-        <h4><%= question %></h4>
         <div id="poll">
           <% options.forEach(function(option){ %>
             <button><%= option %></button><br>
@@ -18,12 +18,7 @@
 
   <div class="poll-results">
     <% if (share === 'on') { %>
-    <h3>Poll Results:</h3>
-    <div id="results">
-      <% for (var option in results){ %>
-        <p><%= option %>: <%= results[option][0] %> (<%= results[option][1] %>%)</p>
-      <% } %>
-    </div>
+      <% include ./partials/results %>
     <% } %>
   </div>
 
